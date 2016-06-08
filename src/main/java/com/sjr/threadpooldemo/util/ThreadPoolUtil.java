@@ -31,7 +31,8 @@ public class ThreadPoolUtil {
      *
      * @param task
      */
-    public static void removeTask(Runnable task) {
-        ThreadPoolFactory.getCommonThreadPool().remove(task);
+    public static boolean removeTask(Runnable task) {
+        boolean remove = ThreadPoolFactory.getCommonThreadPool().remove(task);
+        return remove;
     }
 }

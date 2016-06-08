@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolProxy {
     private ThreadPoolExecutor executor;
-
     private int corePollSize;//核心线程数
     private int maximumPoolSize;//最大线程数
     private long keepAliveTime;//非核心线程持续时间
@@ -36,7 +35,7 @@ public class ThreadPoolProxy {
         if (executor == null)
             synchronized (ThreadPoolProxy.class) {
                 if (executor == null) {
-                    BlockingDeque<Runnable> workQueue = new LinkedBlockingDeque<Runnable>();//表示无界队列，任务数最大为IntegerMAX
+                    BlockingDeque<Runnable> workQueue = new LinkedBlockingDeque<Runnable>(2);//表示无界队列，任务数最大为IntegerMAX
                     ThreadFactory threadFactory = Executors.defaultThreadFactory();//默认的线程工厂
                     RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();//拒绝任务时的处理策略，直接抛异常
                     executor = new ThreadPoolExecutor(corePollSize,
@@ -66,8 +65,9 @@ public class ThreadPoolProxy {
      *
      * @param task
      */
-    public void remove(Runnable task) {
+    public boolean remove(Runnable task) {
         getThreadPoolProxyInstant();
-        executor.remove(task);
+        boolean remove = executor.remove(task);
+        return remove;
     }
 }
